@@ -58,6 +58,11 @@ led.setColor(static_cast<LEDColor>(value));           // C++ cast
 led.setColor((LEDColor)value);                        // C-style cast
 ```
 
+Pulse width modulation (PWM) will be used when a red, green, or blue component is not either all on or all off (0xFF or 0).
+As PWM is implemented with ```analogWrite``` there is the potential for unexpected interactions with interrupts and timers.
+While this does not typically happen, the library will use ```digitalWrite``` on a per-pin basis for solid colors
+such as RED or CYAN to avoid potential issues as well as reduce overall resource utilization.
+
 ## Functions
 
 ```C++
@@ -101,6 +106,12 @@ Available states are as follows:
 The _interval_ parameter is optional.
 It is only meaningful for LEDs that are blinking or alternating.
 The value is specified in milliseconds, and the default is 500ms.
+
+```C++
+LEDState getState(void);
+```
+
+Returns the current LED state.
 
 # Examples
 1. _LightCycle.ino_: Demonstrates the different modes for single-color and RGB LEDs.
