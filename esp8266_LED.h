@@ -51,7 +51,7 @@ public:
    void       setAlternatingColors(const LEDColor color1, const LEDColor color2);
    LEDColor   getColor(void);
    void       setState(const LEDState ledState, const uint32_t interval = 500);
-   // these functions are public but not be to caled directly by the user
+   // these functions are public but not be to called directly by the user
    void       toggleState(void);
    void       alternateRGB(void);
    

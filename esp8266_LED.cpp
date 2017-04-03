@@ -120,19 +120,8 @@ void LED::_illuminate (const LEDColor targetColor) {
 }
 
 
-#if 0
 /*
- Set the callback function for the os_timer for blinking
-*/
-void LED::setToggleFunction (CallbackWithArg func) {
-   _toggle = func;
-   // reinterpret_cast<ETSTimerFunc*>(callback), reinterpret_cast<void*>(arg)
-   os_timer_setfn(&_timer, reinterpret_cast<ETSTimerFunc*>(_toggle), nullptr);
-}
-#endif
-
-/*
- This is called by the physical pin change "C" function to change the current (temporal) state for blinking
+ This ISR is called by the physical pin change "C" function to change the current (temporal) state for blinking
 */
 void LED::toggleState (void) {
    os_intr_lock();                           // disable interrupts
@@ -146,7 +135,7 @@ void LED::toggleState (void) {
    case LEDType::ANODE:
       if ( _illuminated ) {
          _illuminated = false;
-         _illuminate(LEDColor::NONE);
+         _illuminate(LEDColor::NONE);       // this results in an analogWrite(0), which turns off the LED
       } else {
          _illuminated = true;
          _illuminate(_color);
@@ -161,7 +150,7 @@ void LED::toggleState (void) {
 }
 
 /*
- Switch between 2 RGB colors - called by timer callout
+ ISR: Switch between 2 RGB colors - called by timer callout
 */
 void LED::alternateRGB(void) {
    os_intr_lock();
@@ -177,7 +166,7 @@ void LED::alternateRGB(void) {
 
 /*
  Set a new target state of the LED
- For blinking, the state indicates the initial condition of the LED - this allows us to alternate between LEDs
+ For blinking, the state indicates the initial condition of the LED - this allows us to alternate between 2 LEDs
 */
 void LED::setState(const LEDState ledState, const uint32_t interval) {
    if ( _timerArmed ) {
@@ -231,5 +220,3 @@ void LED::setState(const LEDState ledState, const uint32_t interval) {
       break;
    }
 }
-
-
