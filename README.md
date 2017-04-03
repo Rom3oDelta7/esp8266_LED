@@ -9,7 +9,7 @@ In both cases, be sure to have a current limiting resistor on each of the red, g
 (See [LEDCALC] for an online tool to help you determine the current resistor to use).
 This library is written specifically for the ESP8266 and uses the SDK OS Timer for blinking LEDs.
 
-This library supercedes the [LED3] library.
+This library supersedes the [LED3] library.
 It provides all of the functionality of the [LED3] library plus new features, but, unlike [LED3], it can only be used on an ESP8266.
 
 # Programming Interface
@@ -55,7 +55,7 @@ For example:
 led.setColor(LEDColor::GREEN);
 uint32_t value = 0x772017;
 led.setColor(static_cast<LEDColor>(value));           // C++ cast
-led.setColor((uint32_t)value);                        // C-style cast
+led.setColor((LEDColor)value);                        // C-style cast
 ```
 
 ## Functions
