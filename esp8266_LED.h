@@ -28,12 +28,12 @@ enum class LEDType:uint8_t { ANODE, CATHODE, SINGLE };
 enum class LEDColor:uint32_t {
    NONE     =  0x000000,
    RED		=	0xFF0000,
-   GREEN		=  0x00FF00,
+   GREEN    =  0x00FF00,
    BLUE		=	0x0000FF,
    MAGENTA	=	0xFF00FF,
    YELLOW	=	0xFFFF00,
    CYAN		=	0x00FFFF,
-   WHITE		=  0xFFFFFF,
+   WHITE	   =  0xFFFFFF,
    ORANGE	=	0xFFA500,
    PURPLE	=	0x800080,
 };
@@ -51,6 +51,7 @@ public:
    void       setAlternatingColors(const LEDColor color1, const LEDColor color2);
    LEDColor   getColor(void);
    void       setState(const LEDState ledState, const uint32_t interval = 500);
+   // these functions are public but not be to caled directly by the user
    void       toggleState(void);
    void       alternateRGB(void);
    
