@@ -69,13 +69,6 @@ void LED::setColor (const LEDColor color) {
 }
 
 /*
- Return the currently set color of an RGB LED
-*/
-LEDColor LED::getColor (void) {
-   return _color;                                  // this will be WHITE if this is not an RGB LED
-}
-
-/*
  Set RGB LED alternating colors
 */
 void LED::setAlternatingColors(const LEDColor color1, const LEDColor color2) {
@@ -114,9 +107,30 @@ void LED::_illuminate (const LEDColor targetColor) {
       greenPWM = map(greenPWM, 0, 0xFF, 0xFF, 0);
       bluePWM = map(bluePWM, 0, 0xFF, 0xFF, 0);
    }
-   analogWrite(_redPin, redPWM);
-   analogWrite(_greenPin, greenPWM);
-   analogWrite(_bluePin, bluePWM); 
+
+   // if the color is solid, then use digitalWrite to avoid any PWM-related issues
+   if ( redPWM == 0xFF ) {
+      digitalWrite(_redPin, HIGH);
+   } else if ( redPWM == 0 ) {
+      digitalWrite(_redPin, LOW);
+   } else {
+      analogWrite(_redPin, redPWM);
+   }
+
+   if ( greenPWM == 0xFF ) {
+      digitalWrite(_greenPin, HIGH);
+   } else if ( greenPWM == 0 ) {
+      digitalWrite(_greenPin, LOW);
+   } else {
+      analogWrite(_greenPin, greenPWM);
+   }
+   if ( bluePWM == 0xFF ) {
+      digitalWrite(_bluePin, HIGH);
+   } else if ( bluePWM == 0 ) {
+      digitalWrite(_bluePin, LOW);
+   } else {
+      analogWrite(_bluePin, bluePWM);
+   }
 }
 
 
@@ -135,7 +149,7 @@ void LED::toggleState (void) {
    case LEDType::ANODE:
       if ( _illuminated ) {
          _illuminated = false;
-         _illuminate(LEDColor::NONE);       // this results in an analogWrite(0), which turns off the LED
+         _illuminate(LEDColor::NONE); 
       } else {
          _illuminated = true;
          _illuminate(_color);
@@ -176,6 +190,7 @@ void LED::setState(const LEDState ledState, const uint32_t interval) {
    }
    INFO(F("State set to"), (int)ledState);
    INFO(F("Interval"), interval);
+   _state = ledState;
    switch ( ledState ) {
    case LEDState::ON:
    case LEDState::BLINK_ON:

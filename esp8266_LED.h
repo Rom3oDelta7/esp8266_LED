@@ -41,6 +41,8 @@ enum class LEDColor:uint32_t {
 // LED states
 enum class LEDState:uint8_t { OFF, ON, BLINK_OFF, BLINK_ON, ALTERNATE };
 
+// RGB LED modes
+enum class RGBMode:uint8_t { ANALOG, DIGITAL };
 
 class LED {
 public:
@@ -49,9 +51,11 @@ public:
 
    void       setColor(const LEDColor color);
    void       setAlternatingColors(const LEDColor color1, const LEDColor color2);
-   LEDColor   getColor(void);
+   LEDColor   getColor(void) { return _color; }
    void       setState(const LEDState ledState, const uint32_t interval = 500);
-   // these functions are public but not be to called directly by the user
+   LEDState   getState(void) { return _state; }
+
+   // these functions are public for ISR use but not be to called directly by the user
    void       toggleState(void);
    void       alternateRGB(void);
    
@@ -59,17 +63,21 @@ private:
    void       _illuminate(const LEDColor color);
    void       _illuminate(const bool mode);
 
-   uint8_t    _LEDpin = 0;                          // single LED pin -or-
-   uint8_t    _redPin = 0;                          // RGB LED pins
-   uint8_t    _greenPin = 0;
-   uint8_t    _bluePin = 0;
-   volatile   LEDColor _color = LEDColor::WHITE;    // current color for RGB LEDs
-   LEDColor   _altColor1 = LEDColor::RED;           // for alternating colors. Arbitrary starting values
-   LEDColor   _altColor2 = LEDColor::GREEN;
-   LEDType    _type = LEDType::SINGLE;              // single LED or common anode or cathode for RGB LEDs
-   volatile   bool _illuminated = false;            // for blinking
+   // common to both LED types
+   LEDType    _type = LEDType::SINGLE;              // single LED -or- common anode or cathode for RGB LEDs
+   LEDState   _state = LEDState::OFF;
+   volatile   bool _illuminated = false;            // for blinking  - illumination state
    bool       _timerArmed = false;
    os_timer_t _timer;                               // ESP OS software timer (ESP8266 SDK)
+
+   // single-color LEDs only
+   uint8_t    _LEDpin = 0;
+
+   // RGB LEDs only
+   uint8_t    _redPin = 0, _greenPin = 0, _bluePin = 0; 
+   volatile   LEDColor _color = LEDColor::WHITE;    // current color
+   LEDColor   _altColor1 = LEDColor::RED;           // for alternating colors. Arbitrary starting values
+   LEDColor   _altColor2 = LEDColor::GREEN;
 };
 
 
