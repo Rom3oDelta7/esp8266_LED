@@ -1,4 +1,4 @@
-# LED library for ESP8266
+# LED Library for ESP8266
 This library provides functions to manage solid-color (2-lead) LEDs, as well as 3-color RGB (4-lead) LEDs.
 Both common cathode and common anode RGB LEDs are supported.
 For a common cathode LED, the MCU is a current source and you set each pin connected to the R, G, and B leads HIGH to turn them on.
