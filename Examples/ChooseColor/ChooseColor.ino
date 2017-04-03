@@ -1,5 +1,5 @@
 /*
- Example sketch for LED3 library
+ Example sketch for esp8266_LED library
  
  Reads a color code in hex from the serial port and displays that color
  
@@ -11,25 +11,26 @@
    To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/4.0/.
 */
 
-#include <LED3.h>
+#include <esp8266_LED.h>
 
-#define RED_PIN		12			// pin assignments for ESP-12E. Change to match your confiruation
-#define GREEN_PIN	14			// make sure there is a current limiting resistor attached to each color lead
-#define BLUE_PIN	16
+// RGB LED
+#define RED_PIN   14			// pin assignments for ESP-12E. Change to match your confiruation
+#define GREEN_PIN	12			// make sure there is a current limiting resistor attached to each color lead
+#define BLUE_PIN	13
 
 
-LED3		led(RED_PIN, GREEN_PIN, BLUE_PIN, LED3_CATHODE);
-//LED3		led(RED_PIN, GREEN_PIN, BLUE_PIN);						// common anode constructor
+LED		led(RED_PIN, GREEN_PIN, BLUE_PIN);
+//LED		led(RED_PIN, GREEN_PIN, BLUE_PIN, LEDType::ANODE);						// common anode constructor
 
 
 void setup ( void ) {
-	Serial.begin(9600);
+	Serial.begin(115200);
 	while (!Serial);
-	Serial.println("\n\nInput 6-digit hexadecimal color values (RRGGBB)\n");
+	Serial.println("\n\nInput 6-digit hexadecimal color values (RRGGBB) ONLY\n");
 }
 
 void loop ( void ) {
-	uint32_t 	colorValue = 0;
+	uint32_t colorValue = 0;
 	int 		bytePosition = 5;
 	
 	Serial.print("Input Color: ");
@@ -51,5 +52,6 @@ void loop ( void ) {
 	Serial.println(colorValue, HEX);
 	Serial.println();
 	Serial.flush();
-	led.setLED3Color(colorValue);
+	led.setColor(static_cast<LEDColor>(colorValue));
+   led.setState(LEDState::ON);                              // state must be set to ON each time the color changes
 }
