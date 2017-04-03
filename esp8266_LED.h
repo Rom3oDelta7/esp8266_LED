@@ -26,6 +26,7 @@ enum class LEDType:uint8_t { ANODE, CATHODE, SINGLE };
 
 // colors for RGB LED
 enum class LEDColor:uint32_t {
+   NONE     =  0x000000,
    RED		=	0xFF0000,
    GREEN		=  0x00FF00,
    BLUE		=	0x0000FF,
@@ -35,7 +36,6 @@ enum class LEDColor:uint32_t {
    WHITE		=  0xFFFFFF,
    ORANGE	=	0xFFA500,
    PURPLE	=	0x800080,
-   NONE		=	0x000000,
 };
 
 // LED states

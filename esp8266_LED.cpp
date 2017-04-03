@@ -189,42 +189,35 @@ void LED::setState(const LEDState ledState, const uint32_t interval) {
    INFO(F("Interval"), interval);
    switch ( ledState ) {
    case LEDState::ON:
-      if ( !_illuminated ) {
-         toggleState();
-      }
-      break;
-
-   case LEDState::OFF:
-      if ( _illuminated ) {
-         toggleState();
-      }
-      break;
-
    case LEDState::BLINK_ON:
-      // blink, with initial state ON
       _illuminated = true;
       if ( _type == LEDType::SINGLE ) {
          _illuminate(true);
       } else {
          _illuminate(_color);
       }
-      // min interval is 5 - see ESP SDK documentation
-      os_timer_setfn(&_timer, reinterpret_cast<ETSTimerFunc*>(&_LEDToggle), reinterpret_cast<void*>(this));
-      os_timer_arm(&_timer, interval >= 5 ? interval : 5, true);
-      _timerArmed = true;
+      if ( ledState == LEDState::BLINK_ON ) {
+         // blink, with initial state ON - min interval is 5 - see ESP SDK documentation
+         os_timer_setfn(&_timer, reinterpret_cast<ETSTimerFunc*>(&_LEDToggle), reinterpret_cast<void*>(this));
+         os_timer_arm(&_timer, interval >= 5 ? interval : 5, true);
+         _timerArmed = true;
+      }
       break;
 
+   case LEDState::OFF:
    case LEDState::BLINK_OFF:
-      // blink, with initial state OFF
       _illuminated = false;
       if ( _type == LEDType::SINGLE ) {
          _illuminate(false);
       } else {
          _illuminate(LEDColor::NONE);
       }
-      os_timer_setfn(&_timer, reinterpret_cast<ETSTimerFunc*>(&_LEDToggle), reinterpret_cast<void*>(this));
-      os_timer_arm(&_timer, interval >= 5 ? interval : 5, true);
-      _timerArmed = true;
+      if ( ledState == LEDState::BLINK_OFF ) {
+         // blinking, but initial state is OFF
+         os_timer_setfn(&_timer, reinterpret_cast<ETSTimerFunc*>(&_LEDToggle), reinterpret_cast<void*>(this));
+         os_timer_arm(&_timer, interval >= 5 ? interval : 5, true);
+         _timerArmed = true;
+      }
       break;
 
    case LEDState::ALTERNATE:
