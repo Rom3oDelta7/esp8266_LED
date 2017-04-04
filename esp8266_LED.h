@@ -54,14 +54,15 @@ public:
    LEDColor   getColor(void) { return _color; }
    void       setState(const LEDState ledState, const uint32_t interval = 500);
    LEDState   getState(void) { return _state; }
-
-   // these functions are public for ISR use but not be to called directly by the user
-   void       toggleState(void);
-   void       alternateRGB(void);
    
 private:
    void       _illuminate(const LEDColor color);
    void       _illuminate(const bool mode);
+   void       toggleState(void);
+   void       alternateRGB(void);
+
+   friend     void _LEDToggle(LED* led);
+   friend     void _LEDAlternate(LED* led);
 
    // common to both LED types
    LEDType    _type = LEDType::SINGLE;              // single LED -or- common anode or cathode for RGB LEDs
