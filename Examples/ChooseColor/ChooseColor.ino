@@ -19,39 +19,39 @@
 #define BLUE_PIN	13
 
 
-LED		led(RED_PIN, GREEN_PIN, BLUE_PIN);
-//LED		led(RED_PIN, GREEN_PIN, BLUE_PIN, LEDType::ANODE);						// common anode constructor
+RGBLED		led(RED_PIN, GREEN_PIN, BLUE_PIN);
+//RGBLED		led(RED_PIN, GREEN_PIN, BLUE_PIN, LEDType::ANODE);						// common anode constructor
 
 
 void setup ( void ) {
-	Serial.begin(115200);
-	while (!Serial);
-	Serial.println("\n\nInput 6-digit hexadecimal color values (RRGGBB) ONLY\n");
+   Serial.begin(115200);
+   while (!Serial);
+   Serial.println("\n\nInput 6-digit hexadecimal color values (RRGGBB) ONLY\n");
 }
 
 void loop ( void ) {
-	uint32_t colorValue = 0;
-	int 		bytePosition = 5;
-	
-	Serial.print("Input Color: ");
-	while ( bytePosition >= 0 ) {
-		byte inChar;
-		
-		// ignore non-conforming inputs
-		if ( Serial.available() ) {
-			byte inChar = Serial.read();
-			if ( isDigit(inChar) ) {
-				colorValue |= ((inChar - '0') << (bytePosition-- * 4));
-			} else if ( isUpperCase(inChar) ) {
-				colorValue |= ((inChar - 'A' + 10) << (bytePosition-- * 4));
-			} else if ( isLowerCase(inChar) ) {
-				colorValue |= ((inChar - 'a' + 10) << (bytePosition-- * 4));
-			}
-		}
-	}
-	Serial.println(colorValue, HEX);
-	Serial.println();
-	Serial.flush();
-	led.setColor(static_cast<LEDColor>(colorValue));
+   uint32_t colorValue = 0;
+   int 		bytePosition = 5;
+   
+   Serial.print("Input Color: ");
+   while ( bytePosition >= 0 ) {
+      byte inChar;
+      
+      // ignore non-conforming inputs
+      if ( Serial.available() ) {
+         byte inChar = Serial.read();
+         if ( isDigit(inChar) ) {
+            colorValue |= ((inChar - '0') << (bytePosition-- * 4));
+         } else if ( isUpperCase(inChar) ) {
+            colorValue |= ((inChar - 'A' + 10) << (bytePosition-- * 4));
+         } else if ( isLowerCase(inChar) ) {
+            colorValue |= ((inChar - 'a' + 10) << (bytePosition-- * 4));
+         }
+      }
+   }
+   Serial.println(colorValue, HEX);
+   Serial.println();
+   Serial.flush();
+   led.setColor(static_cast<LEDColor>(colorValue));
    led.setState(LEDState::ON);                              // state must be set to ON each time the color changes
 }
