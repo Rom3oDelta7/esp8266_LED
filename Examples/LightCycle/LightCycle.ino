@@ -24,10 +24,10 @@
 
 std::vector<LEDColor> colors = { LEDColor::RED, LEDColor::GREEN, LEDColor::BLUE, LEDColor::MAGENTA, LEDColor::CYAN, LEDColor::WHITE, LEDColor::ORANGE, LEDColor::PURPLE };
 
-LED		rgb(RED_PIN, GREEN_PIN, BLUE_PIN);
-//LED		rgb(RED_PIN, GREEN_PIN, BLUE_PIN, LEDType::ANODE);						// constructor for common anode
+RGBLED		rgb(RED_PIN, GREEN_PIN, BLUE_PIN);
+//RGBLED		rgb(RED_PIN, GREEN_PIN, BLUE_PIN, LEDType::ANODE);						// constructor for common anode
 
-LED       led(LED_PIN);
+SingleLED       led(LED_PIN);
 
 
 void setup ( void ) {
