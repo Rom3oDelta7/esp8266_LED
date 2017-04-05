@@ -24,20 +24,6 @@ extern "C" {
 // type for RGB LEDs
 enum class LEDType:uint8_t { ANODE, CATHODE, SINGLE };
 
-// colors for RGB LED
-enum class LEDColor:uint32_t {
-   NONE     =  0x000000,
-   RED		=	0xFF0000,
-   GREEN    =  0x00FF00,
-   BLUE		=	0x0000FF,
-   MAGENTA	=	0xFF00FF,
-   YELLOW	=	0xFFFF00,
-   CYAN		=	0x00FFFF,
-   WHITE	   =  0xFFFFFF,
-   ORANGE	=	0xFFA500,
-   PURPLE	=	0x800080,
-};
-
 // LED states
 enum class LEDState:uint8_t { OFF, ON, BLINK_OFF, BLINK_ON, ALTERNATE };
 
@@ -77,6 +63,20 @@ private:
 class RGBLED : public LEDCommon {
 public:
    RGBLED (const uint8_t redPin, const uint8_t greenPin, const uint8_t bluePin, LEDType ledType = LEDType::CATHODE);
+
+   // colors for RGB LED
+   enum LEDColor {
+      NONE = 0x000000,
+      RED = 0xFF0000,
+      GREEN = 0x00FF00,
+      BLUE = 0x0000FF,
+      MAGENTA = 0xFF00FF,
+      YELLOW = 0xFFFF00,
+      CYAN = 0x00FFFF,
+      WHITE = 0xFFFFFF,
+      ORANGE = 0xFFA500,
+      PURPLE = 0x800080,
+   };
 
    void       setState(const LEDState ledState, const uint32_t interval = 500);
    void       setColor(const LEDColor color) {
