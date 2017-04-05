@@ -21,7 +21,9 @@ Note that as you cannot get the address of a class member function, this has to 
 and we use a pointer to the object to allow this function access the LED object
 */
 void _SingleToggle (SingleLED* led) {
+   os_intr_lock();                           // disable interrupts
    led->_toggleState();
+   os_intr_unlock();                         // enable interrupts
 
 }
 
@@ -49,10 +51,8 @@ void SingleLED::_illuminate (const bool mode) {
 This ISR is called by the physical pin change "C" function to change the current (temporal) state for blinking
 */
 void SingleLED::_toggleState (void) {
-   os_intr_lock();                           // disable interrupts
    _illuminated = !_illuminated;
    _illuminate(_illuminated);
-   os_intr_unlock();                         // enable interrupts again
 }
 
 /*

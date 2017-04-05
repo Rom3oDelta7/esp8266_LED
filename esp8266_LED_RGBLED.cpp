@@ -21,7 +21,9 @@ Note that as you cannot get the address of a class member function, this has to 
 and we use a pointer to the object to allow this function to access the LED object
 */
 void _RGBToggle (RGBLED* led) {
+   os_intr_lock();                           // disable interrupts
    led->_toggleState();
+   os_intr_unlock();                         // enable interrupts
 }
 
 
@@ -29,7 +31,9 @@ void _RGBToggle (RGBLED* led) {
 This callback handles alternating between 2 RGB colors
 */
 void _RGBAlternate (RGBLED* led) {
+   os_intr_lock();
    led->_alternateRGB();
+   os_intr_unlock();
 }
 
 
@@ -95,7 +99,6 @@ void RGBLED::_illuminate (const LEDColor targetColor) {
 This ISR is called by the physical pin change "C" function to change the current (temporal) state for blinking
 */
 void RGBLED::_toggleState (void) {
-   os_intr_lock();                           // disable interrupts
    if ( _illuminated ) {
       _illuminated = false;
       _illuminate(LEDColor::NONE);
@@ -103,14 +106,12 @@ void RGBLED::_toggleState (void) {
       _illuminated = true;
       _illuminate(_color);
    }
-   os_intr_unlock();                        // enable interrupts again
 }
 
 /*
 ISR: Switch between 2 RGB colors - called by timer callout
 */
 void RGBLED::_alternateRGB(void) {
-   os_intr_lock();
    if ( _color == _altColor1 ) {
       _color = _altColor2;
    } else {
@@ -118,7 +119,6 @@ void RGBLED::_alternateRGB(void) {
    }
    _illuminated = true;
    _illuminate(_color);
-   os_intr_unlock();
 }
 
 /*
