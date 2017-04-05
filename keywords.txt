@@ -5,10 +5,12 @@
 #######################################
 # Datatypes (KEYWORD1)
 #######################################
-LED      KEYWORD1
-LEDColor	KEYWORD1
-LEDType	KEYWORD1
-LEDState	KEYWORD1
+LEDCommon  KEYWORD1
+SingleLED  KEYWORD1
+RGBLED     KEYWORD1
+LEDColor	  KEYWORD1
+LEDType	  KEYWORD1
+LEDState	  KEYWORD1
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################

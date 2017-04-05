@@ -15,14 +15,14 @@ It provides all of the functionality of the [LED3] library plus new features, bu
 # Programming Interface
 ## Constructors
 ```C++
-LED (const uint8_t pin);
+SingleLED (const uint8_t pin);
 ```
 
 This instantiates a single-color LED using the specified pin.
 The pin is set to ```OUTPUT``` mode by the library.
 
 ```C++
-LED (const uint8_t redPin, const uint8_t greenPin, const uint8_t bluePin, LEDType ledType = LEDType::CATHODE);
+RGBLED (const uint8_t redPin, const uint8_t greenPin, const uint8_t bluePin, LEDType ledType = LEDType::CATHODE);
 ```
 
 This instantiates an RGB LED using the specified red, green, and blue pins.
