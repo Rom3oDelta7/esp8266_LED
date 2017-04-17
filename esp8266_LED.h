@@ -47,7 +47,7 @@ class LEDCommon {
 public:
    LEDCommon() {}
 
-   LEDState   getState(void) { return _state; }
+   LEDState   getState(void) const { return _state; }
    
 protected:
    LEDType    _type = LEDType::SINGLE;              // single LED -or- common anode or cathode for RGB LEDs
