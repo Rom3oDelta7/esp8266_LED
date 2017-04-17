@@ -87,7 +87,7 @@ public:
                   _altColor2 = color2;
                   _color = _altColor1;
                }
-   LEDColor   getColor(void) { return _color; }
+   LEDColor   getColor(void) const { return _color; }
 
 private:
    void       _illuminate(const LEDColor color);
