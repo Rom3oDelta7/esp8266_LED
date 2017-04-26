@@ -66,26 +66,28 @@ such as RED or CYAN to avoid potential issues as well as reduce overall resource
 ## Functions
 
 ```C++
-void setColor(const LEDColor color);
+void setColor(const LEDColor color1, const LEDColor color2 = LEDColor::NONE,  const LEDColor color3 = LEDColor::NONE,
+              const LEDColor color4 = LEDColor::NONE, const LEDColor color5 = LEDColor::NONE, const LEDColor color6 = LEDColor::NONE);
 ```
 
-Set the color of an RGB LED to the given color.
-See the previous section for pre-defined colors or setting your own value.
-Setting the color does _not_ illuminate the LED;
+Set from one to six colors of an RGB LED.
+At least one color must be specified.
+When the state is set to ```LEDstate::ON``` then the LED is illuminated using the first color argument.
+The remaining arguments are ignored.
+When the state is set to ```LEDstate::ALTERNATE``` then the LED will cycle through the set of colors passed as arguments.
+In this case, the first color set to ```LEDColor::NONE``` terminates the list, or when all six colors have been displayed.
+The cycle then repeats.
+See the previous section for using the pre-defined colors or setting your own value.
+See the ```setState``` function to set the interval for alternating colors.
+
+Setting colors does _not_ illuminate the LED;
 it must be explicitly turned on via a call to ```setState``` as described below.
 
 ```C++
-void setAlternatingColors(const LEDColor color1, const LEDColor color2);
+const LEDColorArray& getColor(void);
 ```
 
-This function is used to define two alternating colors for an RGB LED.
-As with ```setColor``` this only defines the colors to be used and will not turn on the LED.
-
-```C++
-LEDColor getColor(void);
-```
-
-Returns the current color of an RGB LED.
+Returns a const reference to an array of LEDColor colors containing the values set by ```setColor```.
 
 ```C++
 void setState(const LEDState ledState, const uint32_t interval = 500);
@@ -101,7 +103,7 @@ Available states are as follows:
 |LEDState::OFF|Turns the LED off|
 |LEDState::BLINK_ON|Starts blinking the LED, with the initial state set to ON|
 |LEDState::BLINK_OFF|Starts blinking the LED, with the initial state set to OFF|
-|LEDState::ALTERNATE|Starts alternating the color of an RGB LED between the two previously set values|
+|LEDState::ALTERNATE|Starts alternating the color of an RGB LED between the previously set values|
 
 The _interval_ parameter is optional.
 It is only meaningful for LEDs that are blinking or alternating.
@@ -115,7 +117,7 @@ Returns the current LED state.
 
 # Examples
 1. _LightCycle.ino_: Demonstrates the different modes for single-color and RGB LEDs.
-This example demonstreates how to alternate between two LEDs or use 2 alternating colors on a single RGB LED.
+This example demonstreates how to alternate between two separate LEDs or use alternating colors on a single RGB LED.
 2. _ChooseColor.ino_: Reads a 24-bit heaxadecimal color code from the serial port and displays that color.
 See this example for how to set arbitrary color values other than the pre-defined ones.
 

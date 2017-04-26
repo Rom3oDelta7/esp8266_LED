@@ -5,19 +5,20 @@
 #######################################
 # Datatypes (KEYWORD1)
 #######################################
-LEDCommon  KEYWORD1
-SingleLED  KEYWORD1
-RGBLED     KEYWORD1
-LEDColor	  KEYWORD1
-LEDType	  KEYWORD1
-LEDState	  KEYWORD1
+LEDCommon     KEYWORD1
+SingleLED     KEYWORD1
+RGBLED        KEYWORD1
+LEDColor	     KEYWORD1
+LEDColorArray KEYWORD1
+LEDType	     KEYWORD1
+LEDState	     KEYWORD1
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
 setColor	            KEYWORD2
-setAlternatingColors KEYWORD2
 getColor             KEYWORD2
 setState             KEYWORD2
+getState             KEYWORD2
 
 #######################################
 # Instances (KEYWORD2)
