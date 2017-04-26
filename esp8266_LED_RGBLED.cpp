@@ -53,6 +53,25 @@ RGBLED::RGBLED (const uint8_t redPin, const uint8_t greenPin, const uint8_t blue
    }
 }
 
+/*
+ set one or more LED colors
+ at least one color must be specified
+ for 1 arg, the LED is treated as a single-color LED; for more than 1, the colors will alternate
+ the first color arg equal to NONE indicates the end of the list (or we reach the end of the array)
+ Note that alternating is controlled by the selected LEDState (e.g. ALTERNATE), not by the color list;
+   thus, multiple colors could be set but only one is displayed
+ */
+void RGBLED::setColor(const LEDColor color1, const LEDColor color2,  const LEDColor color3, 
+                      const LEDColor color4, const LEDColor color5, const LEDColor color6) {
+   _color[0] = color1;           //only arg that must be present
+   _color[1] = color2;
+   _color[2] = color3;
+   _color[3] = color4;
+   _color[4] = color5;
+   _color[5] = color6;
+   _colorIndex = 0;
+}
+
 
 // illuminate an RGB LED
 void RGBLED::_illuminate (const LEDColor targetColor) {
@@ -96,7 +115,7 @@ void RGBLED::_illuminate (const LEDColor targetColor) {
 
 
 /*
-This ISR is called by the physical pin change "C" function to change the current (temporal) state for blinking
+This ISR is called by the physical pin change "C" function to turn the LED alternately on and off
 */
 void RGBLED::_toggleState (void) {
    if ( _illuminated ) {
@@ -104,26 +123,28 @@ void RGBLED::_toggleState (void) {
       _illuminate(LEDColor::NONE);
    } else {
       _illuminated = true;
-      _illuminate(_color);
+      _illuminate(_color[0]);
    }
 }
 
 /*
-ISR: Switch between 2 RGB colors - called by timer callout
+ISR: Switch between set RGB colors in the color array - called by timer callout
 */
 void RGBLED::_alternateRGB(void) {
-   if ( _color == _altColor1 ) {
-      _color = _altColor2;
+   _illuminate(_color[_colorIndex]);
+   // display next color until we get LEDColor::NONE or reach the end
+   if ( (_colorIndex < (MAX_RGB_COLORS-1)) && (_color[_colorIndex+1] != LEDColor::NONE) ) {
+      ++_colorIndex;
    } else {
-      _color = _altColor1;
+      // cycle back to the start
+      _colorIndex = 0; 
    }
-   _illuminated = true;
-   _illuminate(_color);
 }
 
 /*
 Set a new target state of the LED
-For blinking, the state indicates the initial condition of the LED - this allows us to alternate between 2 LEDs
+For blinking, the state indicates the initial condition of the LED - this allows us to alternate between 2 separate LEDs
+If multiple colors are defined but the state is set to anything other than ALTERNATE, then only the first color is displayed
 */
 void RGBLED::setState(const LEDState ledState, const uint32_t interval) {
    if ( _timerArmed ) {
@@ -138,7 +159,7 @@ void RGBLED::setState(const LEDState ledState, const uint32_t interval) {
    case LEDState::ON:
    case LEDState::BLINK_ON:
       _illuminated = true;
-      _illuminate(_color);
+      _illuminate(_color[0]);
 
       if ( ledState == LEDState::BLINK_ON ) {
          // blink, with initial state ON - min interval is 5 - see ESP SDK documentation
@@ -151,7 +172,7 @@ void RGBLED::setState(const LEDState ledState, const uint32_t interval) {
    case LEDState::OFF:
    case LEDState::BLINK_OFF:
       _illuminated = false;
-       _illuminate(LEDColor::NONE);
+      _illuminate(LEDColor::NONE);
 
       if ( ledState == LEDState::BLINK_OFF ) {
          // blinking, but initial state is OFF
@@ -162,7 +183,13 @@ void RGBLED::setState(const LEDState ledState, const uint32_t interval) {
       break;
 
    case LEDState::ALTERNATE:
-      // alternate between 2 RGB colors
+      // alternate between RGB colors
+      _illuminated = true;
+      _illuminate(_color[0]);
+      if ( _color[1] != LEDColor::NONE ) {
+         // start alternating with the 2nd color
+         _colorIndex = 1;
+      }
       os_timer_setfn(&_timer, reinterpret_cast<ETSTimerFunc*>(&_RGBAlternate), reinterpret_cast<void*>(this));
       os_timer_arm(&_timer, interval >= 5 ? interval : 5, true);
       _timerArmed = true;

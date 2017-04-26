@@ -66,32 +66,35 @@ String colorName (const LEDColor color) {
    case LEDColor::PURPLE:
       name = String("PURPLE");
       break;
+   case LEDColor::NONE:                   // avoid compiler warning
+   default:
+      break;
    }
    return name;
 }
 
 void loop ( void ) {
    
+
    // run through the solid colors, solid LED on
    Serial.println(F("\n\n... Starting cycle ... SOLID COLORS ..."));
    led.setState(LEDState::ON);
    for ( auto color : colors ) {
       rgb.setColor(color);                      // after setting color, must set to ON before it is illuminated
       rgb.setState(LEDState::ON);
-      Serial.printf("Color: %s (%0X)\n", colorName(rgb.getColor()).c_str(), color);       // just to demo getColor() function
+      Serial.printf("Color: %s (%0X)\n", colorName(rgb.getColor()[0]).c_str(), color);       // just to demo getColor() function
       delay(5000);
       rgb.setState(LEDState::OFF);
    }	
-   led.setState(LEDState::OFF);
    delay(5000);
 
-   // same colors, but now blinking on/off in tandem with solid LED
+   // same colors, but now blinking RGB LED on/off in tandem with solid LED
    led.setState(LEDState::BLINK_ON, 500);
-   Serial.println(F("\n\n ... BLINKING COLORS ..."));
+   Serial.println(F("\n\n ... BLINKING IN TANDEM ..."));
    for ( auto color : colors ) {
       rgb.setColor(color);
       rgb.setState(LEDState::BLINK_ON, 500);
-      Serial.printf("Color: %s (%0X)\n", colorName(rgb.getColor()).c_str(), color);
+      Serial.printf("Color: %s (%0X)\n", colorName(rgb.getColor()[0]).c_str(), color);
       delay(5000);
       rgb.setState(LEDState::OFF);
    }
@@ -99,7 +102,7 @@ void loop ( void ) {
    delay(5000);
 
    // alternate between RGB and solid LED
-   Serial.println(F("\n\n... ALTERNATING RGB/SOLID ..."));
+   Serial.println(F("\n\n... ALTERNATING BETWEEN RGB & SOLID ..."));
    Serial.println(F("RGB: RED"));
    rgb.setColor(LEDColor::RED);
    rgb.setState(LEDState::BLINK_ON, 500);             // LEDs will alternate when blinking initiated in opposite states
@@ -114,21 +117,24 @@ void loop ( void ) {
    rgb.setState(LEDState::OFF);
 
    // alternating RGB colors
-   Serial.println(F("\n\n... ALTERNATING RGB COLORS ..."));
+   Serial.println(F("\n\n... ALTERNATING COLORS on RGB ONLY ..."));
    Serial.println(F("RED/GREEN"));
-   rgb.setAlternatingColors(LEDColor::GREEN, LEDColor::RED);
+   rgb.setColor(LEDColor::GREEN, LEDColor::RED);
    rgb.setState(LEDState::ALTERNATE, 500);
    delay(5000);
    Serial.println(F("ORANGE/PURPLE"));
-   rgb.setAlternatingColors(LEDColor::ORANGE, LEDColor::PURPLE);
+   rgb.setColor(LEDColor::ORANGE, LEDColor::PURPLE);
    rgb.setState(LEDState::ALTERNATE, 1000);
-   delay(5000);
+   delay(10000);
    Serial.println(F("BLUE/MAGENTA"));
-   rgb.setAlternatingColors(LEDColor::BLUE, LEDColor::MAGENTA);
+   rgb.setColor(LEDColor::BLUE, LEDColor::MAGENTA);
    rgb.setState(LEDState::ALTERNATE, 125);
    delay(5000);
-   rgb.setState(LEDState::OFF);
-   Serial.println(F("\n\n... Cycle complete ...\n"));
-
+   Serial.println(F("RED/GREEN/BLUE/ORANGE/CYAN/PURPLE"));
+   rgb.setColor(LEDColor::RED, LEDColor::GREEN, LEDColor::BLUE, LEDColor::ORANGE, LEDColor::CYAN, LEDColor::PURPLE);
+   rgb.setState(LEDState::ALTERNATE, 250);
    delay(10000);
+   
+   Serial.println(F("\n\n... Cycle complete ...\n"));
+   rgb.setState(LEDState::OFF);
 }

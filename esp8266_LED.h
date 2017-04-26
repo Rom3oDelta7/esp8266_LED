@@ -38,6 +38,10 @@ enum class LEDColor:uint32_t {
    PURPLE	=	0x800080,
 };
 
+#define MAX_RGB_COLORS         6
+
+typedef LEDColor LEDColorArray[MAX_RGB_COLORS];
+
 // LED states
 enum class LEDState:uint8_t { OFF, ON, BLINK_OFF, BLINK_ON, ALTERNATE };
 
@@ -79,15 +83,9 @@ public:
    RGBLED (const uint8_t redPin, const uint8_t greenPin, const uint8_t bluePin, LEDType ledType = LEDType::CATHODE);
 
    void       setState(const LEDState ledState, const uint32_t interval = 500);
-   void       setColor(const LEDColor color) {
-                  _color = color;
-               }
-   void       setAlternatingColors(const LEDColor color1, const LEDColor color2) {
-                  _altColor1 = color1;
-                  _altColor2 = color2;
-                  _color = _altColor1;
-               }
-   LEDColor   getColor(void) const { return _color; }
+   void       setColor(const LEDColor color1, const LEDColor color2 = LEDColor::NONE,  const LEDColor color3 = LEDColor::NONE,
+                       const LEDColor color4 = LEDColor::NONE, const LEDColor color5 = LEDColor::NONE, const LEDColor color6 = LEDColor::NONE);
+   const      LEDColorArray& getColor(void) const { return _color; }
 
 private:
    void       _illuminate(const LEDColor color);
@@ -97,10 +95,9 @@ private:
    friend     void _RGBToggle(RGBLED* led);
    friend     void _RGBAlternate(RGBLED* led);
 
-   uint8_t    _redPin = 0, _greenPin = 0, _bluePin = 0;
-   volatile   LEDColor _color = LEDColor::WHITE;    // current color
-   LEDColor   _altColor1 = LEDColor::RED;           // for alternating colors. Arbitrary starting values
-   LEDColor   _altColor2 = LEDColor::GREEN;
+   uint8_t       _redPin = 0, _greenPin = 0, _bluePin = 0;
+   LEDColorArray _color = {LEDColor::NONE};              // 1 or more colors to display
+   volatile      uint8_t _colorIndex = 0;                // current LED color to display
 };
 
 #endif
