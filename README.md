@@ -1,3 +1,6 @@
+# THIS LIBRARY WAS DEPRECIATED AND REPLACED WITH THE LEDManager LIBRARY
+See https://github.com/Rom3oDelta7/LEDManager
+
 # LED Library for ESP8266
 This library provides functions to manage solid-color (2-lead) LEDs, as well as 3-color RGB (4-lead) LEDs.
 Both common cathode and common anode RGB LEDs are supported.
